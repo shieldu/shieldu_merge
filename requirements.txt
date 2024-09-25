@@ -9,4 +9,4 @@ python-dotenv
 opencv-python
 ultralytics
 tensorflow
-tf.keras
+tf-keras
