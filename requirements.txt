@@ -6,3 +6,7 @@ openai
 pypdf
 langchain-community
 python-dotenv
+opencv-python
+ultralytics
+tensorflow
+tf.keras
