@@ -116,7 +116,7 @@ def detect_people():
 
 
 # CNN 모델 로드
-model = load_model('./cnn_model.h5')
+model_cnn = load_model('./cnn_model.h5')
 
 # 이미지 저장 경로
 IMAGE_FOLDER = './cat_dog'
@@ -168,7 +168,7 @@ def predict():
     img /= 255.0
 
     # 예측 수행
-    prediction = model.predict(img)
+    prediction = model_cnn.predict(img)
     label = 'dog' if prediction[0][0] >= 0.5 else 'cat'
 
     os.remove(file_path)
