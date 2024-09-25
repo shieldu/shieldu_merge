@@ -1,0 +1,8 @@
+flask
+langchain
+chromadb
+sentence-transformers
+openai
+pypdf
+langchain-community
+python-dotenv

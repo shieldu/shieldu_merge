@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 기반 챗봇</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+        #chatApp {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        #messageInput {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #pdf-file {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatApp">
+        <h1>PDF 기반 챗봇</h1>
+        
+        <!-- PDF 파일 업로드 -->
+        <form id="pdf-form" enctype="multipart/form-data">
+            <input type="file" id="pdf-file" name="pdf" accept="application/pdf">
+            <button type="submit">PDF 업로드</button>
+        </form>
+
+        <!-- 채팅 메시지 표시 영역 -->
+        <div id="messages"></div>
+
+        <!-- 질문 입력 및 전송 -->
+        <input type="text" id="messageInput" placeholder="여기에 질문을 입력하세요..." />
+        <button onclick="sendMessage()">전송</button>
+    </div>
+
+    <script>
+        document.getElementById('pdf-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('pdf-file');
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+
+            const response = await fetch('/upload_pdf', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        async function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            const messagesDiv = document.getElementById('messages');
+
+            if (message.trim() !== '') {
+                messagesDiv.innerHTML += `<p><strong>나:</strong> ${message}</p>`;
+                document.getElementById('messageInput').value = '';
+
+                try {
+                    const response = await fetch('/ask_question', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ question: message })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    messagesDiv.innerHTML += `<p><strong>AI:</strong> ${result.answer}</p>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                } catch (error) {
+                    console.error('Error:', error);
+                    messagesDiv.innerHTML += `<p>오류가 발생했습니다. 다시 시도해주세요.</p>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

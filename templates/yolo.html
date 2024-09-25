@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intrusion Detection Log</title>
+    <style>
+        body {
+            {% if intrusion %}
+                background-color: red;
+            {% else %}
+                background-color: white;
+            {% endif %}
+            transition: background-color 0.5s;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.2em;
+            color: black; /* White text color */
+        }
+
+        button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 1em;
+            color: white;
+            background-color: #00bfff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0073b7; /* Darker blue on hover */
+        }
+        .button-icon {
+            margin-right: 8px;
+        }
+        /* 중앙 정렬을 위한 스타일 */
+        .log-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            background-color: #f3f3f3;
+            border-radius: 8px;
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        ul li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>실시간 침입자 감지 시스템</h1>
+    <div style="text-align: center;">
+        <button onclick="fetch('/start_detection')">
+            <span class="button-icon">🔒</span> 침입 감지 시작
+        </button>
+        <button onclick="fetch('/stop_detection')">
+            <span class="button-icon">🔓</span> 침입 감지 중지
+        </button>
+    </div>
+    
+    <div class="log-container">
+        <h2>침입 감지 로그</h2>
+        <ul id="log-list">
+            {% for log in logs %}
+                <li>{{ log }}</li>
+            {% endfor %}
+        </ul>   
+    </div>
+    
+    <script>
+    function updateLogs() {
+        fetch('/get_logs')
+            .then(response => response.json())
+            .then(data => {
+                const logList = document.getElementById('log-list');
+                logList.innerHTML = '';  // Clear the current log list
+                data.logs.forEach(log => {
+                    const li = document.createElement('li');
+                    li.textContent = log;
+                    logList.appendChild(li);
+                });
+            });
+    }
+
+    function checkIntrusionStatus() {
+        fetch('/intrusion_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.intrusion) {
+                    document.body.style.backgroundColor = "red";
+                } else {
+                    document.body.style.backgroundColor = "white";
+                }
+            });
+    }
+
+    // Poll the server every second to check intrusion status and update logs
+    setInterval(() => {
+        checkIntrusionStatus();
+        updateLogs();
+    }, 1000);
+    </script>
+</body>
+</html>
+
+
