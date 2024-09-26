@@ -5,10 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이미지 분류기</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E0F7FA;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            margin-top:30vh;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 70%; /* 화면의 절반 이상을 차지하도록 설정 */
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container h1 {
+            color: #007BFF;
+            /* margin-bottom: 20px; */
+            font-size: 2em;
+        }
+        p {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #0288D1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #01579B;
+        }
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
+            gap: 10px;
             margin: 20px;
         }
         .grid img {
@@ -41,11 +87,13 @@
     </style>
 </head>
 <body>
-    <h1>로그인</h1>
-    <p id="instruction">강아지를 선택하세요.</p>
-    <div class="grid" id="imageGrid"></div>
-    <button id="submitBtn">OK</button>
-    <h2 id="result"></h2>
+    <div class="container">
+        <h1>시스템 비정상적 접근(해킹) 탐지 기능</h1>
+        <p id="instruction">강아지를 선택하세요.</p>
+        <div class="grid" id="imageGrid"></div>
+        <button id="submitBtn">OK</button>
+        <h2 id="result"></h2>
+    </div>
 
     <script>
         
@@ -134,21 +182,20 @@
 
             if (hasCat) {
                 resultElement.innerText = `실패! 선택한 이미지에 고양이가 포함되어 있습니다.`;
+                alert("실패");
             } else if (selectedDogCount !== dogCount) {
-                // 강아지 이미지를 모두 선택하지 않은 경우
                 resultElement.innerText = `실패! 강아지 이미지가 ${dogCount}개 있는데, ${selectedDogCount}개만 선택했습니다.`;
+                alert("더 찾아야 함.");
             } else if (selectedImages.length > 0 && selectedImages.every(img => img.dataset.label === expectedLabel)) {
-                // 강아지 이미지를 모두 선택한 경우
                 resultElement.innerText = `성공! ${dogCount}개의 강아지를 모두 선택했습니다.`;
+                alert("성공");
                 setTimeout(() => {
                     window.location.href = "/home";
                 }, 2000); // 2초 후에 리다이렉트 (사용자가 메시지를 확인할 수 있도록)
             } else {
-                // 다른 조건에 맞지 않는 경우
                 resultElement.innerText = `실패! ${expectedLabel === 'dog' ? '고양이' : '강아지'}를 클릭했거나 조건에 맞지 않습니다.`;
             }
         };
-
         // 페이지 로드 시 그리드 생성
         createGrid();
     </script>
