@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #e0f7fa; /* 홈페이지와 유사한 배경색 */
+            background-color: #e0f7fa;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,7 +36,7 @@
         }
         h1 .emoji {
             margin-right: 10px;
-            font-size: 1.5em; /* 이모지 크기 설정 */
+            font-size: 1.5em;
         }
         form {
             width: 100%;
@@ -88,7 +88,6 @@
         .send-btn:hover {
             background-color: #01579B;
         }
-        /* 홈페이지로 돌아가기 버튼 */
         .home-btn {
             position: absolute;
             top: 20px;
@@ -106,8 +105,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- 이모지를 제목에 추가 -->
-        <h1><span class="emoji">🤖</span>실시간 지능형 챗봇 기능</h1>
+        <h1><span class="emoji">🤖</span>실시간 지능형 챗봇 기능 (Economy ver)</h1>
         <form id="pdf-form" enctype="multipart/form-data">
             <input type="file" id="pdf-file" name="pdf" accept="application/pdf">
             <button type="submit">PDF 업로드</button>
@@ -127,7 +125,7 @@
             const formData = new FormData();
             formData.append('pdf', fileInput.files[0]);
 
-            const response = await fetch('/upload_pdf', {
+            const response = await fetch('/eco_upload_pdf', {  // 수정된 라우트
                 method: 'POST',
                 body: formData
             });
@@ -145,7 +143,7 @@
                 document.getElementById('messageInput').value = '';
 
                 try {
-                    const response = await fetch('/ask_question', {
+                    const response = await fetch('/eco_ask_question', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -164,3 +162,4 @@
     </script>
 </body>
 </html>
+
