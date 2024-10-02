@@ -80,7 +80,11 @@ def detect_people():
             continue
 
         if not cap.isOpened():
+            print("웹캠을 열 수 없습니다.")
             cap.open(0)
+
+        # if not cap.isOpened():
+        #     cap.open(0)
             
         try:
             ret, frame = cap.read()
@@ -89,7 +93,10 @@ def detect_people():
                 break
 
             # 사람 탐지를 위해 YOLO 모델 실행
-            results = model.predict(source=frame, show=True)
+            # results = model.predict(source=frame, show=True)
+
+            frame_resized = cv2.resize(frame, (640, 640))
+            results = model(frame)
 
             # 각 프레임마다 침입 상태 초기화
             intrusion_detected = False
@@ -111,6 +118,9 @@ def detect_people():
                         # 침입 감지 시 경고음 재생
                         if platform.system() == "Windows":
                             winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
+                        elif platform.system() == "Darwin":  # MacOS
+                            os.system('afplay /System/Library/Sounds/Glass.aiff')
+
 
             time.sleep(1)  # CPU 사용량을 줄이기 위해 약간의 지연 추가
         except Exception as e:
@@ -119,11 +129,12 @@ def detect_people():
 
 
 
+
 # CNN 모델 로드
 model_cnn = load_model('./cnn_model.h5')
 
 # 이미지 저장 경로
-IMAGE_FOLDER = './cat_dog'
+IMAGE_FOLDER = '../cat_dog'
 
 # 메인 페이지
 @app.route('/')
